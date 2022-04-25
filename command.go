@@ -16,37 +16,30 @@ func main() {
 	app.EnableBashCompletion = true
 	app.Name = "file-line-kafka-producer"
 	app.Description = "This CLI read file by line and send this line to Kafka topic"
-	app.Commands = []*cli.Command{
-		{
-			Name:    "run",
-			Aliases: []string{"r"},
-			Usage:   "Read file and send to Kafka topic",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:  "brokers",
-					Usage: "Kafka brokers separated by comma.",
-				},
-				&cli.StringFlag{
-					Name:  "topic",
-					Usage: "Topic to send data read from file line",
-				},
-				&cli.StringFlag{
-					Name:  "file",
-					Usage: "File path on disk",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				brokers := c.String("brokers")
-				topic := c.String("topic")
-				filePath := c.String("file")
-
-				config.Config(topic, brokers, filePath)
-
-				file.ReadFileAndSendMessage()
-
-				return nil
-			},
+	app.Flags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  "brokers",
+			Usage: "Kafka brokers separated by comma.",
 		},
+		&cli.StringFlag{
+			Name:  "topic",
+			Usage: "Topic to send data read from file line",
+		},
+		&cli.StringFlag{
+			Name:  "file",
+			Usage: "File path on disk",
+		},
+	}
+	app.Action = func(c *cli.Context) error {
+		brokers := c.String("brokers")
+		topic := c.String("topic")
+		filePath := c.String("file")
+
+		config.Config(topic, brokers, filePath)
+
+		file.ReadFileAndSendMessage()
+
+		return nil
 	}
 
 	err := app.Run(os.Args)
