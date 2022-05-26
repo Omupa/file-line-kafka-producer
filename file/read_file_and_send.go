@@ -10,7 +10,7 @@ import (
 )
 
 func ReadFileAndSendMessage() {
-	messageAmoung := 1
+	messageAmount := 1
 
 	file, err := os.Open(config.GetFilePath())
 	if err != nil {
@@ -20,18 +20,18 @@ func ReadFileAndSendMessage() {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		messageAmoung++
+		messageAmount++
 
 		err := kafka.SendMessageSync(scanner.Text())
 
 		if err != nil {
-			messageAmoung--
+			messageAmount--
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	} else {
-		log.Default().Printf("Proccess finished. Messages sended: %d", messageAmoung)
+		log.Default().Printf("Proccess finished. Messages sended: %d", messageAmount)
 	}
 }
